@@ -1,5 +1,10 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,5 +56,24 @@ public class CustomerDTO {
 
     public void setPetIds(List<Long> petIds) {
         this.petIds = petIds;
+    }
+
+    @NotNull
+    public static Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO){
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerDTO, customer);
+        return customer;
+    }
+
+    @NotNull
+    public static CustomerDTO convertCustomerToCustomerDTO(Customer customer){
+        CustomerDTO customerDTO = new CustomerDTO();
+        BeanUtils.copyProperties(customer, customerDTO);
+        if(!CollectionUtils.isEmpty(customer.getPetList())){
+            List<Long> petIds = new ArrayList<>();
+            customer.getPetList().forEach(e -> petIds.add(e.getId()));
+            customerDTO.setPetIds(petIds);
+        }
+        return customerDTO;
     }
 }
