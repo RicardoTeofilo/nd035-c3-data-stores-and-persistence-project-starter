@@ -8,17 +8,17 @@ import java.time.LocalDate;
  */
 public class PetDTO {
     private long id;
-    private PetType type;
+    private PetTypeEnum type;
     private String name;
     private long ownerId;
     private LocalDate birthDate;
     private String notes;
 
-    public PetType getType() {
+    public PetTypeEnum getType() {
         return type;
     }
 
-    public void setType(PetType type) {
+    public void setType(PetTypeEnum type) {
         this.type = type;
     }
 

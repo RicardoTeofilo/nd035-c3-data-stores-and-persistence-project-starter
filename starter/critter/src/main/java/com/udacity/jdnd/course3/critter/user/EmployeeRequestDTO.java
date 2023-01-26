@@ -8,14 +8,14 @@ import java.util.Set;
  * to the database directly.
  */
 public class EmployeeRequestDTO {
-    private Set<EmployeeSkill> skills;
+    private Set<EmployeeSkillEnum> skills;
     private LocalDate date;
 
-    public Set<EmployeeSkill> getSkills() {
+    public Set<EmployeeSkillEnum> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<EmployeeSkill> skills) {
+    public void setSkills(Set<EmployeeSkillEnum> skills) {
         this.skills = skills;
     }
 
