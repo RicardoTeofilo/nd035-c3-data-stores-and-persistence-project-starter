@@ -69,8 +69,8 @@ public class PetDTO {
     public static Pet convertPetDTOToPet(PetDTO petDTO){
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO, pet);
-        PetType petType = new PetType(petDTO.getType());
-        pet.setType(petType);
+        if(petDTO.getType() != null)
+            pet.setType(new PetType(petDTO.getType()));
         return pet;
     }
 
@@ -78,7 +78,10 @@ public class PetDTO {
     public static PetDTO convertPetToPetDTO(Pet pet){
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);
-        petDTO.setType(pet.getPetType().getType());
+        if(pet.getPetType() != null)
+            petDTO.setType(pet.getPetType().getType());
+        if(pet.getCustomer() != null)
+            petDTO.setOwnerId(pet.getCustomer().getId());
         return petDTO;
     }
 }

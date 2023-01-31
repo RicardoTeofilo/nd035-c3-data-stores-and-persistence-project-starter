@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -54,20 +55,55 @@ public class PetRepositoryTest {
         List<Pet> newPetList = new ArrayList<>();
         newPetList.add(newPet);
         newCustomer.setPetList(newPetList);
-        newCustomer = customerRepository.save(newCustomer);
+        this.testEntityManager.merge(newCustomer);
         //test we can find the PET by customer ID
         List<Pet> petList = petRepository.findByCustomerId(customer.getId());
         Assertions.assertEquals(newPet.getId(), petList.get(0).getId());
 
-        //test that we can find the Pest from the customer Repository
+        //test that we can find the Pet from the customer Repository
         Optional<Customer> fetchedCustomer = customerRepository.findById(customer.getId());
-
         if(fetchedCustomer.isPresent()){
             List<Pet> petListFromCustomer = fetchedCustomer.get().getPetList();
             Assertions.assertEquals(newPet.getId(), petListFromCustomer.get(0).getId());
         }
 
+    }
 
+    @Test
+    public void testFindPetListFromCustomer(){
+        //create and persist customer
+        Customer customer = createCustomer();
+        Customer newCustomer = this.testEntityManager.persist(customer);
+
+        //create and persist Pet with the customer set. In theory, it should have cascaded to customer.
+        PetType petType = createPetType("CAT");
+        Pet pet = createPet(petType);
+        pet.setCustomer(customer);
+        Pet newPet = this.testEntityManager.persist(pet);
+
+        //The owning side of the relationship Customer -> Pet is on the Pet side
+        //Therefore, we need to explicitly set the pet list on the Customer side
+        List<Pet> newPetList = new ArrayList<>();
+        newPetList.add(newPet);
+        newCustomer.setPetList(newPetList);
+        this.testEntityManager.merge(newCustomer);
+
+        //test that we can find the Pet from the customer Repository
+        Optional<Customer> fetchedCustomer = customerRepository.findById(customer.getId());
+        if(fetchedCustomer.isPresent()){
+            List<Pet> petListFromCustomer = fetchedCustomer.get().getPetList();
+            if(!CollectionUtils.isEmpty(petListFromCustomer))
+                Assertions.assertEquals(newPet.getId(), petListFromCustomer.get(0).getId());
+        }
+
+        //test that we can find the Pet from the customer findAll repository
+        List<Customer> customerList = customerRepository.findAll();
+        if(!CollectionUtils.isEmpty(customerList)){
+            List<Pet> petList1 = customerList.get(0).getPetList();
+            if(!CollectionUtils.isEmpty(petList1)){
+                Assertions.assertEquals(newPet.getId(), petList1.get(0).getId());
+            }
+        }
     }
 
     private static PetType createPetType(String type){

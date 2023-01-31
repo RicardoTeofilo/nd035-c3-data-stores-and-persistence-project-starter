@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,15 +22,15 @@ public class Schedule {
     private Long id;
 
     @OneToMany
-    private List<Employee> employees;
+    private List<Employee> employees = new ArrayList<>();
 
     @OneToMany
-    private List<Pet> pets;
+    private List<Pet> pets = new ArrayList<>();
 
     private LocalDate date;
 
     @OneToMany
-    private Set<EmployeeSkill> employeeSkills;
+    private Set<EmployeeSkill> skills = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -62,11 +64,11 @@ public class Schedule {
         this.date = date;
     }
 
-    public Set<EmployeeSkill> getEmployeeSkills() {
-        return employeeSkills;
+    public Set<EmployeeSkill> getSkills() {
+        return skills;
     }
 
-    public void setEmployeeSkills(Set<EmployeeSkill> employeeSkills) {
-        this.employeeSkills = employeeSkills;
+    public void setSkills(Set<EmployeeSkill> skills) {
+        this.skills = skills;
     }
 }
