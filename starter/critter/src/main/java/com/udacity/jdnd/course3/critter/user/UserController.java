@@ -47,14 +47,13 @@ public class UserController {
     public List<CustomerDTO> getAllCustomers(){
         List<CustomerDTO> customerDTOList = new ArrayList<>();
         List<Customer> customerList = customerService.findAllCustomers();
-        if(!CollectionUtils.isEmpty(customerList)){
-            customerList.forEach(e -> {
-                customerDTOList.add(CustomerDTO.convertCustomerToCustomerDTO(e));
-            });
-            return customerDTOList;
-        }else{
+        if(CollectionUtils.isEmpty(customerList))
             return Collections.emptyList();
-        }
+
+        customerList.forEach(e -> {
+            customerDTOList.add(CustomerDTO.convertCustomerToCustomerDTO(e));
+        });
+        return customerDTOList;
     }
 
     @GetMapping("/customer/pet/{petId}")
@@ -78,15 +77,11 @@ public class UserController {
     public List<EmployeeDTO> getAllEmployees(){
         List<EmployeeDTO> employeeDTOList = new ArrayList<>();
         List<Employee> employeeList = employeeService.findAllEmployees();
-        if(!CollectionUtils.isEmpty(employeeList)){
-            employeeList.forEach(employee -> {
-                employeeDTOList.add(EmployeeDTO.convertEmployeeToEmployeeDTO(employee));
-            });
-            return employeeDTOList;
-        }else {
+        if(CollectionUtils.isEmpty(employeeList))
             return Collections.emptyList();
-        }
 
+        employeeList.forEach(employee -> employeeDTOList.add(EmployeeDTO.convertEmployeeToEmployeeDTO(employee)));
+        return employeeDTOList;
     }
 
 
@@ -100,6 +95,9 @@ public class UserController {
         Set<EmployeeSkill> skills = EmployeeDTO.convertSkillEnumToEmployeeSkill(employeeDTO.getSkills());
 
         List<Employee> employeeList = employeeService.findEmployeeForService(skills, employeeDTO.getDate());
+        if(CollectionUtils.isEmpty(employeeList))
+            return Collections.emptyList();
+
         List<EmployeeDTO> employeeDTOList = new ArrayList<>();
         employeeList.forEach(employee -> {
             employeeDTOList.add(EmployeeDTO.convertEmployeeToEmployeeDTO(employee));

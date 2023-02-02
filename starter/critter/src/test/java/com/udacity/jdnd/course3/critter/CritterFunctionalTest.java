@@ -163,7 +163,8 @@ public class CritterFunctionalTest {
         er2.setDate(LocalDate.of(2023, 10, 27)); //friday
         er2.setSkills(Sets.newHashSet(EmployeeSkillEnum.WALKING, EmployeeSkillEnum.SHAVING));
 
-        Set<Long> eIds2 = userController.findEmployeesForService(er2).stream().map(EmployeeDTO::getId).collect(Collectors.toSet());
+        Set<Long> eIds2 = userController.findEmployeesForService(er2)
+                .stream().map(EmployeeDTO::getId).collect(Collectors.toSet());
         Set<Long> eIds2expected = Sets.newHashSet(emp3n.getId());
         Assertions.assertEquals(eIds2expected, eIds2);
     }
@@ -178,7 +179,7 @@ public class CritterFunctionalTest {
         petTemp.setOwnerId(customerDTO.getId());
         PetDTO petDTO = petController.savePet(petTemp);
 
-        LocalDate date = LocalDate.of(2019, 12, 25);
+        LocalDate date = LocalDate.of(2023, 12, 20);
         List<Long> petList = Lists.newArrayList(petDTO.getId());
         List<Long> employeeList = Lists.newArrayList(employeeDTO.getId());
         Set<EmployeeSkillEnum> skillSet =  Sets.newHashSet(EmployeeSkillEnum.PETTING);
@@ -194,15 +195,19 @@ public class CritterFunctionalTest {
 
     @Test
     public void testFindScheduleByEntities() {
-        ScheduleDTO sched1 = populateSchedule(1, 2, LocalDate.of(2019, 12, 25), Sets.newHashSet(EmployeeSkillEnum.FEEDING, EmployeeSkillEnum.WALKING));
-        ScheduleDTO sched2 = populateSchedule(3, 1, LocalDate.of(2019, 12, 26), Sets.newHashSet(EmployeeSkillEnum.PETTING));
+        ScheduleDTO sched1 = populateSchedule(1, 2,
+                LocalDate.of(2023, 12, 25),
+                Sets.newHashSet(EmployeeSkillEnum.FEEDING, EmployeeSkillEnum.WALKING));
+        ScheduleDTO sched2 = populateSchedule(3, 1,
+                LocalDate.of(2023, 12, 26),
+                Sets.newHashSet(EmployeeSkillEnum.PETTING));
 
         //add a third schedule that shares some employees and pets with the other schedules
         ScheduleDTO sched3 = new ScheduleDTO();
         sched3.setEmployeeIds(sched1.getEmployeeIds());
         sched3.setPetIds(sched2.getPetIds());
-        sched3.setActivities(Sets.newHashSet(EmployeeSkillEnum.SHAVING, EmployeeSkillEnum.PETTING));
-        sched3.setDate(LocalDate.of(2020, 3, 23));
+        sched3.setActivities(Sets.newHashSet(EmployeeSkillEnum.FEEDING, EmployeeSkillEnum.WALKING));
+        sched3.setDate(LocalDate.of(2023, 12, 25));
         scheduleController.createSchedule(sched3);
 
         /*

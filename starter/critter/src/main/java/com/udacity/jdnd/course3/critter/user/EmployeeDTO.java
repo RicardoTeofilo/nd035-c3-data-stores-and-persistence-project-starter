@@ -60,34 +60,35 @@ public class EmployeeDTO {
 
     public static Set<EmployeeSkill> convertSkillEnumToEmployeeSkill(Set<EmployeeSkillEnum> employeeSkills){
 
-        if(!CollectionUtils.isEmpty(employeeSkills)){
-            Set<EmployeeSkill> skills = new HashSet<>();
-            employeeSkills
-                    .forEach(skill -> {
-                        EmployeeSkill employeeSkill = new EmployeeSkill(skill.toString().toUpperCase());
-                        skills.add(employeeSkill);
-                    });
-            return skills;
-
-        }else{
+        if(CollectionUtils.isEmpty(employeeSkills))
             return Collections.emptySet();
-        }
+
+        Set<EmployeeSkill> skills = new HashSet<>();
+        employeeSkills
+            .forEach(skill -> {
+                EmployeeSkill employeeSkill = new EmployeeSkill(skill.toString().toUpperCase());
+                skills.add(employeeSkill);
+            });
+        return skills;
     }
 
     public static EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee){
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setId(employee.getId());
         employeeDTO.setName(employee.getName());
-        if(!CollectionUtils.isEmpty(employee.getSkills())){
-            Set<EmployeeSkillEnum> skills = new HashSet<>();
-            employee.getSkills()
-                    .forEach(employeeSkill -> {
-                        EmployeeSkillEnum skillEnum = EmployeeSkillEnum.valueOf(employeeSkill.getSkill());
-                        skills.add(skillEnum);
-                    });
-            employeeDTO.setSkills(skills);
-        }
         employeeDTO.setDaysAvailable(employee.getDaysAvailable());
+        employeeDTO.setSkills(convertEmployeeSkillToEmployeeSkillEnum(employee.getSkills()));
+
         return employeeDTO;
+    }
+
+    public static Set<EmployeeSkillEnum> convertEmployeeSkillToEmployeeSkillEnum(Set<EmployeeSkill> employeeSkillList){
+
+        if(CollectionUtils.isEmpty(employeeSkillList))
+            return Collections.emptySet();
+
+        Set<EmployeeSkillEnum> skills = new HashSet<>();
+        employeeSkillList.forEach(employeeSkill -> skills.add(EmployeeSkillEnum.valueOf(employeeSkill.getSkill())));
+        return skills;
     }
 }

@@ -41,11 +41,11 @@ public class PetController {
 
         List<PetDTO> petDTOList = new ArrayList<>();
         List<Pet> petList = petService.findPetByCustomerId(ownerId);
-        if(!CollectionUtils.isEmpty(petList)){
-            petList.forEach(e -> petDTOList.add(PetDTO.convertPetToPetDTO(e)));
-            return petDTOList;
-        }else{
+        if(CollectionUtils.isEmpty(petList))
             return Collections.emptyList();
-        }
+
+        petList.forEach(e -> petDTOList.add(PetDTO.convertPetToPetDTO(e)));
+        return petDTOList;
+
     }
 }

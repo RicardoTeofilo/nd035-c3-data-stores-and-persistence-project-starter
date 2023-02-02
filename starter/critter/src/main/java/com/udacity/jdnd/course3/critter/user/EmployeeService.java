@@ -18,11 +18,13 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Transactional
     public Employee findEmployeeById(Long id){
         return employeeRepository.findById(id)
                 .orElseThrow(EmployeeNotFoundException::new);
     }
 
+    @Transactional
     public List<Employee> findAllEmployees(){
         return employeeRepository.findAll();
     }
@@ -42,17 +44,18 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
+    @Transactional
     public List<Employee> findEmployeeForService(Set<EmployeeSkill> skills, LocalDate localDate){
 
         if(CollectionUtils.isEmpty(skills))
-            throw new InvalidSkillsException();
+            throw new InvalidSkillsException("The Skill set passed is null or empty");
 
         if(localDate == null) {
-            throw new InvalidDateException();
+            throw new InvalidDateException("The date passed is null");
         }else {
             LocalDate now = LocalDate.now();
             if (localDate.isBefore(now))
-                throw new InvalidDateException();
+                throw new InvalidDateException("The date passed is in the past. Can not schedule services in the past");
         }
         //Date is valid and not in the past. Let's extract the Day of Week from it.
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
