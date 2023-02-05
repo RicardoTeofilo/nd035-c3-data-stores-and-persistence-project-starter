@@ -51,10 +51,9 @@ public class ScheduleService {
         }else if (employeeForServiceList.size() != employeeIds.size())
             throw new InvalidScheduleException("There is a mismatch in the number of employee available and the employee list requested");
 
-        employeeForServiceList.forEach(employee -> {
-            if (!employeeIds.contains(employee.getId())){
-                throw new InvalidScheduleException("There is a mismatch in the list of employees available and the employee list requested");
-            }
+        employeeIds.forEach(employeeId -> {
+            if(employeeForServiceList.contains(employeeId))
+                throw new InvalidScheduleException("There employeeID: " + employeeId + " is not in the list of employees available based on skills and date");
         });
 
         //Next we perform some safety checks and validations on the Pet list

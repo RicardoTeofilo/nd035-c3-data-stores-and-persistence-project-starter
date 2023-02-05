@@ -70,4 +70,9 @@ public class PetService {
         return Optional.ofNullable(this.findPetById(petId).getCustomer());
     }
 
+    @Transactional
+    public List<Pet> getAllPets(){
+        return petRepository.findAll();
+    }
+
 }
