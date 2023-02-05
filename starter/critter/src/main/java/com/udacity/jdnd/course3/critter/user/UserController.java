@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Handles web requests related to Users.
@@ -56,9 +53,19 @@ public class UserController {
         return customerDTOList;
     }
 
+    @GetMapping("/customer/{customerId}")
+    public CustomerDTO getCustomer(@Valid @PathVariable long customerId){
+        Customer customer = customerService.findCustomerById(customerId);
+        return CustomerDTO.convertCustomerToCustomerDTO(customer);
+    }
+
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@Valid @PathVariable long petId){
-        return CustomerDTO.convertCustomerToCustomerDTO(petService.findCustomerByPetId(petId));
+        Optional<Customer> customer = petService.findCustomerByPetId(petId);
+        if (customer.isEmpty())
+            return null;
+
+        return CustomerDTO.convertCustomerToCustomerDTO(customer.get());
     }
 
     @PostMapping("/employee")

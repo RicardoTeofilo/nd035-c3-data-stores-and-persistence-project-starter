@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.pet;
 
 import com.udacity.jdnd.course3.critter.user.Customer;
+import com.udacity.jdnd.course3.critter.user.CustomerNotFoundException;
 import com.udacity.jdnd.course3.critter.user.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,11 @@ public class PetService {
         Pet savedPet;
         Customer existingCustomer = null;
         if(customerId != null){
-            Optional<Customer> customer = customerRepository.findById(customerId);
-            if(customer.isPresent()) {
-                existingCustomer = customer.get();
-                pet.setCustomer(existingCustomer);
-
-            }
+            //If there is a customer Id to be associated with the Pet,
+            //it must be an existing valid customer Id
+            existingCustomer = customerRepository.findById(customerId)
+                    .orElseThrow(CustomerNotFoundException::new);
+            pet.setCustomer(existingCustomer);
         }
         savedPet = petRepository.save(pet);
         if(existingCustomer != null){
@@ -65,8 +65,9 @@ public class PetService {
         return petRepository.findByCustomerId(id);
     }
 
-    public Customer findCustomerByPetId(Long petId){
-        return this.findPetById(petId).getCustomer();
+    @Transactional
+    public Optional<Customer> findCustomerByPetId(Long petId){
+        return Optional.ofNullable(this.findPetById(petId).getCustomer());
     }
 
 }

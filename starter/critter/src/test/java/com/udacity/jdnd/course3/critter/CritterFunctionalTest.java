@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.udacity.jdnd.course3.critter.pet.PetController;
 import com.udacity.jdnd.course3.critter.pet.PetDTO;
+import com.udacity.jdnd.course3.critter.pet.PetNotFoundException;
 import com.udacity.jdnd.course3.critter.schedule.ScheduleController;
 import com.udacity.jdnd.course3.critter.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.user.*;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,6 +64,15 @@ public class CritterFunctionalTest {
     }
 
     @Test
+    public void testGetEmployeeExpectException(){
+
+        EmployeeNotFoundException exception =
+                Assertions.assertThrows(EmployeeNotFoundException.class,
+                () -> userController.getEmployee(10l));
+        Assertions.assertTrue(exception.getMessage().contains("Employee not found"));
+    }
+
+    @Test
     public void testAddPetsToCustomer() {
         CustomerDTO customerDTO = createCustomerDTO();
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
@@ -84,6 +95,25 @@ public class CritterFunctionalTest {
         CustomerDTO retrievedCustomer = userController.getAllCustomers().get(0);
         Assertions.assertTrue(retrievedCustomer.getPetIds() != null && retrievedCustomer.getPetIds().size() > 0);
         Assertions.assertEquals(retrievedCustomer.getPetIds().get(0), retrievedPet.getId());
+    }
+
+    @Test
+    public void testAddPetsToCustomerWithInvalidCustomerId(){
+
+        PetDTO petDTO = createPetDTO();
+        //this is an invalid customer ID
+        petDTO.setOwnerId(100l);
+        CustomerNotFoundException exception = Assertions.assertThrows(CustomerNotFoundException.class,
+                () -> {petController.savePet(petDTO);});
+        Assertions.assertTrue(exception.getMessage().contains("Customer not found"));
+    }
+
+    @Test
+    public void testGetPetWithInvalidPetId(){
+
+        PetNotFoundException exception = Assertions.assertThrows(PetNotFoundException.class,
+                () -> petController.getPet(10l));
+        Assertions.assertEquals("Pet not found", exception.getMessage());
     }
 
     @Test
@@ -167,6 +197,33 @@ public class CritterFunctionalTest {
                 .stream().map(EmployeeDTO::getId).collect(Collectors.toSet());
         Set<Long> eIds2expected = Sets.newHashSet(emp3n.getId());
         Assertions.assertEquals(eIds2expected, eIds2);
+    }
+
+
+    @Test
+    public void testFindEmployeesByServiceWithInvalidSkillsAndDate(){
+
+        //The skill set is null. Can not schedule without the skill set
+        EmployeeRequestDTO er1 = new EmployeeRequestDTO();
+        er1.setDate(LocalDate.of(2023, 10, 25)); //wednesday
+        er1.setSkills(Collections.emptySet());
+        InvalidSkillsException exception = Assertions.assertThrows(InvalidSkillsException.class,
+                () -> userController.findEmployeesForService(er1));
+        Assertions.assertEquals("The Skill set passed is null or empty", exception.getMessage());
+
+        ////The date passed is null. Can not schedule services without the date
+        er1.setSkills(Sets.newHashSet(EmployeeSkillEnum.PETTING));
+        er1.setDate(null);
+        InvalidDateException exception1 = Assertions.assertThrows(InvalidDateException.class,
+                () -> userController.findEmployeesForService(er1));
+        Assertions.assertEquals("The date passed is null", exception1.getMessage());
+
+        //The date passed is in the past. Can not schedule services in the past
+        er1.setDate(LocalDate.of(2019, 10, 25));
+        InvalidDateException exception2 = Assertions.assertThrows(InvalidDateException.class,
+                () -> userController.findEmployeesForService(er1));
+        Assertions.assertTrue(exception2.getMessage().contains("The date passed is in the past"));
+
     }
 
     @Test
