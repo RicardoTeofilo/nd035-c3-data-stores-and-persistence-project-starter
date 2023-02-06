@@ -12,7 +12,7 @@
 	<artifactId>critter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>critter</name>
-	<description>Starter code for Critter Chronologer project</description>
+	<description>Code implementation for Critter Chronologer project</description>
 
 	<properties>
 		<java.version>11</java.version>
