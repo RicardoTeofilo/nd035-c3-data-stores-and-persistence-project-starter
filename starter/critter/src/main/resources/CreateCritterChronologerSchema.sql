@@ -1,0 +1,17 @@
+-- This step must be done prior to running the app on the MYSQL workbench app.
+-- This is a helper file with the MySQL commands required to run create the schema,
+-- run the app as user 'sa' with the right privileges
+-----------------------------------------------------------------
+-- You can run the drop schema command, if you want to start from a clean state
+-- DROP SCHEMA `critterchronologer`;
+-----------------------------------------------------------------
+-- Create the critterchronologer database. You can run this if you have note created the schema yet
+--CREATE SCHEMA `critterchronologer`;
+-----------------------------------------------------------------
+-- Create the user if you haven’t yet. This maps to the properties on spring.datasource.username=sa
+-- spring.datasource.password=sa1234 on the application.properties file
+-- CREATE USER 'sa'@'localhost' IDENTIFIED BY 'sa1234';
+-----------------------------------------------------------------
+-- Gives all privileges to the new user on critterchronologer
+-- GRANT ALL ON critterchronologer.* TO 'sa'@'localhost';
+-----------------------------------------------------------------
