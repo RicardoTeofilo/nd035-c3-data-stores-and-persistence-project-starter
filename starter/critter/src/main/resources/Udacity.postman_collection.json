@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "96397646-3137-4e07-bcda-1a143842c8d7",
+		"_postman_id": "104d366e-78ab-4409-9d05-141f0a64881a",
 		"name": "Udacity",
 		"description": "This is the updated collection for Udacity Course 3 Data Store and Persistence project. With this you can try out many of the all of the API in related to the project. \nPlease note that the first 7 API calls, should be run in order since they set environment variables that are then passed to the next api call. \n\nFor example, the \"Save Customer 1\" call will persit a customer and set the ID that is returned on the response as \"customerId1\". On the following \"Save Pet 1\" call, we then pass the value {{customerId1}} to the ownerId field to set up the relationship between the pet and the ownner (customer) entities. \n\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -13,8 +13,10 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"customerId1\", jsonData.id);"
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"customerId1\", jsonData.id);",
+							"",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -61,8 +63,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"customerId2\", jsonData.id);"
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"customerId2\", jsonData.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -109,8 +111,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"petId1\", jsonData.id);"
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"petId1\", jsonData.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -136,14 +138,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8082/pet",
+					"raw": "http://localhost:8082/pet/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8082",
 					"path": [
-						"pet"
+						"pet",
+						""
 					]
 				}
 			},
@@ -156,8 +159,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"petId2\", jsonData.id);"
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"petId2\", jsonData.id);",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -212,8 +216,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"employeeId1\", jsonData.id);",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"employeeId1\", jsonData.id);",
 							""
 						],
 						"type": "text/javascript"
@@ -261,8 +265,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"employeeId2\", jsonData.id);"
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"employeeId2\", jsonData.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -309,8 +313,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"employeeId3\", jsonData.id);"
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"employeeId3\", jsonData.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -451,7 +455,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8082/user/employee/1",
+					"raw": "http://localhost:8082/user/employee/{{employeeId1}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -460,7 +464,7 @@
 					"path": [
 						"user",
 						"employee",
-						"1"
+						"{{employeeId1}}"
 					]
 				}
 			},
@@ -720,7 +724,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8082/schedule/customer/{{customerId2}}",
+					"raw": "http://localhost:8082/schedule/customer/{{customerId1}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -729,7 +733,7 @@
 					"path": [
 						"schedule",
 						"customer",
-						"{{customerId2}}"
+						"{{customerId1}}"
 					]
 				}
 			},
@@ -912,6 +916,36 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "customerId1",
+			"value": ""
+		},
+		{
+			"key": "customerId2",
+			"value": ""
+		},
+		{
+			"key": "petId1",
+			"value": ""
+		},
+		{
+			"key": "petId2",
+			"value": ""
+		},
+		{
+			"key": "employeeId1",
+			"value": ""
+		},
+		{
+			"key": "employeeId2",
+			"value": ""
+		},
+		{
+			"key": "employeeId3",
+			"value": ""
 		}
 	]
 }
